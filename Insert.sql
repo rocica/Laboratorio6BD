@@ -33,3 +33,18 @@ INSERT INTO suc_tipo_ahorro (cod_sucursal, tipo_ahorro)
 VALUES ('S001', 2);
 INSERT INTO suc_tipo_ahorro  (cod_sucursal, tipo_ahorro)
 VALUES ('S001', 3);
+
+--ACTUALIZACIONES
+/*
+BEGIN 
+    ActualizarTransacciones();
+END;
+/
+*/
+
+/*
+BEGIN 
+    ActCuentaCorriente();
+END;
+/
+*/
