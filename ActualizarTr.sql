@@ -76,7 +76,7 @@ SELECT * FROM sucursales;
 SELECT * FROM suc_tipo_ahorro;
 
 UPDATE sucursales
-	SET montoahorro =
+	SET montoahorro = 0
 
 delete ahorros;
 
