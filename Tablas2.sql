@@ -144,7 +144,6 @@ CREATE TABLE suc_tipo_prest(
 );
 
 --LABORATORIO N6
-
 ALTER TABLE sucursales ADD(
 	--tipo_ahorro NUMBER (2), 
 	montoahorro NUMBER(9, 2) DEFAULT 0 NOT NULL 
@@ -156,18 +155,6 @@ CREATE TABLE tipo_ahorro(
     tasa NUMBER (9, 2) NOT NULL,
 	CONSTRAINT Tipo_ahorro PRIMARY KEY(tipo_ahorro)
 );
-
-CREATE TABLE suc_tipo_ahorro(
-	cod_sucursal varchar2(4) NOT NULL,
-	tipo_ahorro number(4) NOT NULL, 
-	montoahorrado number(9, 2) DEFAULT 0 NOT NULL,
-	CONSTRAINT fk_cod_sucursal_ahorros2 
-		FOREIGN KEY (cod_sucursal)
-		REFERENCES sucursales (cod_sucursales),
-	CONSTRAINT fk_tipo_ahorro 
-		FOREIGN KEY (tipo_ahorro)
-		REFERENCES tipo_ahorro(tipo_ahorro)
-)
 
 CREATE TABLE ahorros(
 	cod_sucursal varchar2(4) NOT NULL,
@@ -215,7 +202,7 @@ CREATE TABLE auditoria(
         CHECK (tipo_transac IN ('1','2'))
 );
 
-CREATE TABLE Transadeporeti
+CREATE TABLE transadeporeti
 (
     cod_sucursal VARCHAR2(4) NOT NULL,
     id_transaccion NUMBER(4) NOT NULL,
@@ -223,7 +210,7 @@ CREATE TABLE Transadeporeti
     tipo_ahorro NUMBER(2) NOT NULL,
     fecha_transaccion DATE NOT NULL,
     monto_depret NUMBER (6) NOT NULL,
-    status CHAR (5) NOT NULL,
+    status CHAR NOT NULL,
     usuario varchar2(10) NOT NULL,
     fecha_insercion DATE NOT NULL,
     tipotransac NUMBER (1) NOT NULL,
@@ -239,5 +226,17 @@ CREATE TABLE Transadeporeti
     CONSTRAINT ch_tipotransac
         CHECK (tipotransac IN ('1','2')),
 	CONSTRAINT ch_stat
-        CHECK (tipo_op IN ('S', 'N'))
+        CHECK (status IN ('S', 'N'))
+);
+
+CREATE TABLE suc_tipo_ahorro(
+	cod_sucursal varchar2(4) NOT NULL,
+	tipo_ahorro number(4) NOT NULL, 
+	montoahorrado number(9, 2) DEFAULT 0 NOT NULL,
+	CONSTRAINT fk_cod_sucursal_ahorros2 
+		FOREIGN KEY (cod_sucursal)
+		REFERENCES sucursales (cod_sucursal),
+	CONSTRAINT fk_tipo_ahorro1 
+		FOREIGN KEY (tipo_ahorro)
+		REFERENCES tipo_ahorro(tipo_ahorro)
 );

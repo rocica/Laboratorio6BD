@@ -1,4 +1,4 @@
-/*PROCEDIMIENTO 1*/
+--PROCEDIMIENTO 1
 CREATE SEQUENCE cont_ahorro
     START WITH 1 INCREMENT BY 1;
 
@@ -16,14 +16,8 @@ EXCEPTION
 END;
 /
 
-BEGIN
-	nuevo_tipo_ahorros('Navidad', 6);
-	nuevo_tipo_ahorros('Corriente', 4);
-	nuevo_tipo_ahorros('Escolar', 6);
-END;
-/
 
-/*PROCEDIMIENTO 2*/
+--PROCEDIMIENTO 2
 CREATE SEQUENCE cont_cuenta
 	START with 1
 	INCREMENT by 1;
@@ -49,21 +43,11 @@ BEGIN
 EXCEPTION
 	WHEN dup_val_on_index THEN
 		DBMS_OUTPUT.PUT_LINE(‘Valores duplicados’);
-END;
-/
-
-BEGIN
-	nueva_cuenta('S001', 1, 1, '2/01/2022', 6, 200, 5000, 50, '15/6/2022', 
-				'16/2/2022', '2/01/2022');
-	nueva_cuenta('S001', 2, 2, '12/01/2012', 4, 500, 65000, 500, '17/5/2022', 
-				'16/6/2022', '20/8/2021');
-	nueva_cuenta('S001', 3, 3, '23/09/2002', 6, 120, 8000, 600, '30/5/2022', 
-				'6/3/2022', '24/02/2007');
-END;
+END; 
 /
 
 
-/*PROCEDIMIENTO 3*/
+--PROCEDIMIENTO 3
 CREATE SEQUENCE cont_tr
 	START with 1
 	INCREMENT by 1;
@@ -92,20 +76,14 @@ EXCEPTION
 	END;
 /
 
-BEGIN
-	Nueva_transaccion('S001', 1, 1, 1, '2/1/2022', 1, 500, 'S', '15/6/2022');
-	Nueva_transaccion('S001', 2, 2, 2, '12/1/2012', 2, 60, 'S', '16/6/2022');
-	Nueva_transaccion('S001', 3, 3, 3, '23/09/2002', 1, 100, 'S', '6/3/2022');
-END;
-/
 
-/*PROCEDIMIENTO 4*/
+--PROCEDIMIENTO 4
 CREATE OR REPLACE FUNCTION InteresAhorro(
 	p_monto in Transadeporeti.monto_depret%type,
 	p_interes in tipo_ahorro.tasa%type)
 	RETURN Transadeporeti.monto_depret%type IS 
 BEGIN 
-	RETURN (p_monto*p_interes)/100;
+	RETURN (p_monto * p_interes)/100;
 END InteresAhorro;
 /
 
@@ -175,42 +153,44 @@ BEGIN
 END;
 /
 
-BEGIN
-	nueva_cuenta('S001', 1, 1, '2/01/2022', 6, 200, 5000, 50, '15/6/2022', 
-				'16/2/2022', '2/01/2022');
-	nueva_cuenta('S001', 2, 2, '12/01/2012', 4, 500, 65000, 500, '17/5/2022', 
-				'16/6/2022', '20/8/2021');
-	nueva_cuenta('S001', 3, 3, '23/09/2002', 6, 120, 8000, 600, '30/5/2022', 
-				'6/3/2022', '24/02/2007');
-END;
-/
-
-BEGIN
-	Nueva_transaccion('S001', 1, 1, 1, '2/1/2022', 1, 500, 'S', '15/6/2022');
-	Nueva_transaccion('S001', 2, 2, 2, '12/1/2012', 2, 60, 'S', '16/6/2022');
-	Nueva_transaccion('S001', 3, 3, 3, '23/09/2002', 1, 100, 'S', '6/3/2022');
-END;
-/
-
 BEGIN 
     ActualizarTransacciones();
 END;
 /
 
-/*Inserción a sucursal tipo ahorro*/
-INSERT INTO suc_tipo_ahorro  
-VALUES (1, 1)
-INSERT INTO suc_tipo_ahorro  
-VALUES (1, 2)
-INSERT INTO suc_tipo_ahorro  
-VALUES (1, 3)
 
-/*PROCEDIMIENTO 5*/
+--PROCEDIMIENTO 5
+CREATE OR REPLACE PROCEDURE ActCuentaCorriente IS
+	v_tasa ahorros.tasainteres_ahorro%type;
+	v_salAhorro ahorros.saldoahorro%type;
+	v_tipo_ahorro ahorros.tipo_ahorro%type;
+	v_salInteres ahorros.saldoahorro%type;
+	v_interes ahorros.saldoahorro%type;
+	v_idcliente ahorros.id_cliente%type;
 
-CREATE SEQUENCE numcuenta
-    START WITH 1 INCREMENT BY 1 NOCACHE NO CYCLE;
+	CURSOR c_ahorros IS
+		SELECT tasainteres_ahorro, saldoahorro, tipo_ahorro, saldointeres, id_cliente
+		FROM ahorros
+		WHERE (tipo_ahorro = 2);
+BEGIN
+	OPEN c_ahorros;
+	LOOP
+		FETCH c_ahorros INTO v_tasa, v_salAhorro, v_tipo_ahorro, v_salInteres, v_idcliente;
+		EXIT WHEN c_ahorros%NOTFOUND;
+			v_interes := InteresAhorro(v_salAhorro, v_tasa);
+			v_salAhorro := v_salAhorro + v_interes;
+			v_salInteres := v_salInteres + v_interes;
+			UPDATE ahorros
+			SET saldoahorro = v_salAhorro,
+			saldointeres = v_salInteres
+			WHERE (id_cliente = v_idcliente) AND (tipo_ahorro = v_tipo_ahorro);	
+	END LOOP;
+    CLOSE c_ahorros;
+END;
+/
 
-
-CREATE OR REPLACE PROCEDURE ActualizarSaldo IS
-
+BEGIN 
+    ActCuentaCorriente();
+END;
+/
     

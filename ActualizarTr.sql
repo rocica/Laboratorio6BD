@@ -73,6 +73,8 @@ SELECT * FROM transadeporeti;
 
 SELECT * FROM sucursales;
 
+SELECT * FROM suc_tipo_ahorro;
+
 UPDATE sucursales
 	SET montoahorro =
 
