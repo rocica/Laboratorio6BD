@@ -144,10 +144,10 @@ CREATE TABLE suc_tipo_prest(
 );
 
 --PROCEDIMIENTOS
-create or replace procedure Nuevo_Tipo_profesion(
+CREATE OR REPLACE PROCEDURE nuevo_tipo_profesion(
 	p_codigo in profesion.cod_profesion%Type,
 	P_Tipo_profesion in profesion.descripcion%type) is
-begin
+BEGIN
 	insert into profesion(cod_profesion, descripcion) 
 	values (p_codigo, p_tipo_profesion);
 exception
@@ -159,10 +159,10 @@ END;
 /
 
 
-create or replace procedure Nueva_sucursal(
+CREATE OR REPLACE PROCEDURE nueva_sucursal(
 	p_codigo_sucursal in sucursales.cod_sucursal%type,
 	P_nombre_sucursal in sucursales.nombre_suc%type) is
-begin
+BEGIN
 	insert into sucursales
 	values (p_codigo_sucursal, p_nombre_sucursal, 0, 0);
 exception
@@ -177,16 +177,16 @@ END;
 create or replace function edad_cliente(
 	p_fecha_nac in cliente.fecha_nac%type)
 	return cliente.edad%type is
-begin
+BEGIN
 	return (sysdate- to_date(p_fecha_nac))/365.25;
-end edad_cliente;
+END edad_cliente;
 /
 
 create sequence cont_cliente
 start with 1
 increment by 1;
 
-create or replace procedure Insertar_cliente (
+CREATE OR REPLACE PROCEDURE Insertar_cliente (
 	p_cedula in cliente.cedula%type,
 	p_nombre in cliente.nombre%type,
 	p_apellido in cliente.apellido%type,
@@ -195,7 +195,7 @@ create or replace procedure Insertar_cliente (
 	p_profesion in cliente.cod_profesion%type,
 	p_sucursal in cliente.cod_sucursal%type) is
 	v_edad cliente.edad%type;
-begin
+BEGIN
 	v_edad := edad_cliente(p_fecha_nac);
 	insert into cliente (id_cliente, cedula, nombre, apellido, sexo, fecha_nac, cod_profesion, edad, cod_sucursal) 
 	values (cont_cliente.nextval, p_cedula, p_nombre, p_apellido, p_sexo, p_fecha_nac, p_profesion, v_edad, p_sucursal);
@@ -208,10 +208,10 @@ END;
 /
 
 
-create or replace procedure Nuevo_Tipo_Telefono(
+CREATE OR REPLACE PROCEDURE nuevo_tipo_telefono(
 	p_codigo in tipo_tel.cod_tipotel%type,
 	p_tipo_telefono in tipo_tel.descripcion%type) is
-begin
+BEGIN
 	insert into tipo_tel (cod_tipotel, descripcion) 
 	values (p_codigo, p_tipo_telefono);
 exception
@@ -223,11 +223,11 @@ END;
 /
 
 
-create or replace procedure nuevo_telefono(
+CREATE OR REPLACE PROCEDURE nuevo_telefono(
 	p_codigo in telefono.id_cliente%type,
 	p_telefono in telefono.telefono%type,
 	p_cod_tipotel in telefono.cod_tipotel%type) is
-begin
+BEGIN
 	insert into telefono (id_cliente, telefono, cod_tipotel) 
 	values (p_codigo, p_telefono, p_cod_tipotel);
 exception
@@ -239,10 +239,10 @@ END;
 /
 
 
-create or replace procedure nuevo_tipo_email(
+CREATE OR REPLACE PROCEDURE nuevo_tipo_email(
 	p_codigo in tipo_email.cod_tipoe%Type,
 	p_tipo_email in tipo_email.descripcion%type) is
-begin
+BEGIN
 	insert into tipo_email (cod_tipoe, descripcion) 
 	values (p_codigo, p_tipo_email);
 exception
@@ -254,11 +254,11 @@ END;
 /
 
 
-create or replace procedure Nuevo_email(
+CREATE OR REPLACE PROCEDURE nuevo_email(
 	p_codigo in email.id_cliente%Type,
 	P_cod_tipoe in email.cod_tipoe%type,
 	p_email in email.email%Type) is
-begin
+BEGIN
 	insert into email (id_cliente, cod_tipoe, email) 
 	values (p_codigo, p_cod_tipoe, p_email);
 exception
@@ -270,11 +270,11 @@ END;
 /
 
 
-create or replace procedure Nuevo_Tipo_prestamo(
+CREATE OR REPLACE PROCEDURE nuevo_tipo_prestamo(
 	p_codigo in tipo_prestamo.cod_tipop%Type,
 	p_tipo_prestamo in tipo_prestamo.descripcion%type,
 	p_cod_sucursal in tipo_prestamo.cod_sucursal%type) is
-begin
+BEGIN
 	insert into tipo_prestamo
 	values (p_codigo, p_tipo_prestamo, p_cod_sucursal);
 exception
@@ -290,7 +290,7 @@ create sequence num_p
 start with 1
 increment by 1;
 
-create or replace procedure insertar_prestamo(
+CREATE OR REPLACE PROCEDURE insertar_prestamo(
 	p_id_cliente in prestamo.id_cliente%type,
 	p_cod_tipop in prestamo.cod_tipop%type,
 	p_f_aprobado in prestamo.f_aprobado%type,
@@ -303,7 +303,7 @@ create or replace procedure insertar_prestamo(
 	p_saldo_actual in prestamo.saldoactual%type,
 	p_interes_pagado in prestamo.interespagado%type,
 	p_fecha_modificacion in prestamo.fechamodificacion%type) is
-begin
+BEGIN
 	insert into prestamo values (p_id_cliente, p_cod_tipop, num_p.nextval, 
 	p_f_aprobado, p_m_aprobado, p_tasa, p_letra, p_m_pagado, p_f_pago, 
 	p_cod_sucursal, p_saldo_actual, p_interes_pagado,
@@ -336,13 +336,13 @@ create sequence id_transac
 	start with 1 
 	increment by 1;
 
-create or replace procedure introducir_transac_pago(
+CREATE OR REPLACE PROCEDURE introducir_transac_pago(
 	p_id_cliente in transacpagos.id_cliente%type,
 	p_cod_tipop in transacpagos.cod_tipop%type,
 	p_cod_sucursal in transacpagos.cod_sucursal%Type,
 	p_fecha_transaccion in transacpagos.fecha_transaccion%type,
 	p_monto_pago in transacpagos.monto_pago%type) is
-begin
+BEGIN
 	insert into transacpagos (id_transaccion, id_cliente, cod_tipop, 
 cod_sucursal, fecha_transaccion, monto_pago, status, usuario)
 	values (id_transac.nextval, p_id_cliente, p_cod_tipop, 
@@ -355,18 +355,122 @@ EXCEPTION
 END;
 /
 
+
+CREATE OR REPLACE FUNCTION calcularInteres(
+	p_interes in prestamo.interespagado%type, 
+	p_monto in prestamo.m_aprobado%type)
+	RETURN prestamo.interespagado%type is
+BEGIN
+	return (p_monto * p_interes)/100;
+END calcularInteres;
+/
+
+CREATE OR REPLACE PROCEDURE ActualizarPagos IS
+	v_idcliente prestamo.id_cliente%type;
+	v_tasa prestamo.tasa%type;
+	v_interes prestamo.tasa%type;
+	v_NewMonto prestamo.saldoactual%type;
+	v_NewSalPrestamo prestamo.saldoactual%type;
+	v_salPrestamo prestamo.saldoActual%type;
+	v_m_pagado prestamo.m_pagado%type;
+	v_interespagado prestamo.interespagado%type;
+	v_cod_tipop prestamo.cod_tipop%type;
+
+	v_montoPagado transacpagos.monto_pago%type;
+	
+	v_codSucursal sucursales.cod_sucursal%type;	
+	v_montoSucursal sucursales.monto%type;
+	v_cantidadPrestamos sucursales.cantidad_pres%type;
+
+	v_montoxtipo suc_tipo_prest.monto%type;
+
+	CURSOR c_calPrestamo IS 
+		SELECT m_aprobado, tasa, m_pagado, interespagado
+		FROM prestamo;
+
+	CURSOR c_calTransacPagos IS 
+		SELECT monto_pago, id_cliente, cod_tipop  
+		FROM transacpagos
+		WHERE (status = 'N');
+	
+	CURSOR c_sucursal IS 
+		SELECT cod_sucursal, cantidad_pres, monto 
+		FROM sucursales;
+	
+	CURSOR c_suc_tipo_prest IS
+		SELECT monto
+		FROM suc_tipo_prest;
+
+	BEGIN	
+		OPEN c_calPrestamo;
+		OPEN c_calTransacPagos;
+		OPEN c_sucursal;
+		OPEN c_suc_tipo_prest;
+		LOOP
+			FETCH c_calPrestamo INTO v_salPrestamo, v_tasa,
+			v_m_pagado, v_interespagado;
+			FETCH c_calTransacPagos INTO v_montoPagado, v_idcliente, 
+			v_cod_tipop;
+			FETCH c_sucursal INTO v_codSucursal, v_cantidadPrestamos,
+			v_montoSucursal;
+			FETCH c_suc_tipo_prest INTO v_montoxtipo;
+
+			EXIT WHEN c_calPrestamo%NOTFOUND;
+
+			v_interes := calcularInteres(v_tasa, v_salPrestamo);
+			v_NewMonto := v_montoPagado - v_interes;
+			v_NewSalPrestamo := v_salPrestamo - v_NewMonto;
+			v_montoSucursal := v_montoSucursal - v_NewMonto;
+			v_m_pagado := v_m_pagado + v_NewMonto;
+			v_interespagado := v_interespagado + v_interes;
+			v_montoxtipo := v_montoxtipo - v_NewMonto;
+			
+			IF (v_NewSalPrestamo = 0) THEN 
+				v_cantidadPrestamos := v_cantidadPrestamos - 1;
+			END IF;
+		
+		UPDATE transacpagos
+		SET status = 'S';
+
+		UPDATE prestamo
+		SET saldoActual= v_NewSalPrestamo,
+			f_pago = sysdate, 
+			m_pagado = v_m_pagado, 
+			interespagado = v_interespagado 
+		WHERE (id_cliente = v_idcliente)
+		AND (cod_tipop = v_cod_tipop);
+	
+		UPDATE sucursales 
+		SET monto = v_montoSucursal 
+		WHERE cod_sucursal = v_codSucursal;
+		
+		UPDATE suc_tipo_prest 
+		SET monto = v_montoxtipo 
+		WHERE (cod_sucursal = v_codSucursal) 
+		AND (cod_tipop = v_cod_tipop);
+
+	END LOOP;
+
+	CLOSE c_calPrestamo;
+	CLOSE c_calTransacPagos;
+	CLOSE c_sucursal;
+	CLOSE c_suc_tipo_prest;
+
+END;
+/
+
 --INSERT
 --PROFESIÓN
-begin
+BEGIN
 	nuevo_tipo_profesion('PR01', 'Abogado');
 	nuevo_tipo_profesion('PR02', 'Profesor');
 	nuevo_tipo_profesion('PR03', 'Mecánico');
-end;
+END;
 /
 
 --SUCURSAL
 BEGIN
-	Nueva_sucursal('S001', 'Casa Matriz');
+	nueva_sucursal('S001', 'Casa Matriz');
 END;
 /
 
@@ -380,27 +484,27 @@ END;
 /
 
 --TIPO TELÉFONO
-begin
+BEGIN
 	nuevo_tipo_telefono('TT01', 'Celular');
 	nuevo_tipo_telefono('TT02', 'Residencia');
 	nuevo_tipo_telefono('TT03', 'Familiar cercano');
 	nuevo_tipo_telefono('TT05', 'Laboral');
-end;
+END;
 /
 
 --TELÉFONO
-begin
+BEGIN
 	Nuevo_Telefono('4', '6258-5877', 'TT01');
 	Nuevo_Telefono('2', '6675-2258', 'TT02');
 	Nuevo_Telefono('3', '6675-4458', 'TT03');
 	Nuevo_Telefono('1', '6675-8875', 'TT05');
-end;
+END;
 /
 
 --TIPO EMAIL
-begin
+BEGIN
 	nuevo_tipo_email('EM01', 'Personal');
-end;
+END;
 /
 
 --EMAIL
@@ -413,12 +517,12 @@ END;
 /
 
 --TIPO PRÉSTAMO
-begin
+BEGIN
 	nuevo_tipo_prestamo('TP01', 'Personal', 'S001');
 	nuevo_tipo_prestamo('TP02', 'Auto', 'S001');
 	nuevo_tipo_prestamo('TP03', 'Hipoteca', 'S001');
 	nuevo_tipo_prestamo('TP05', 'Escolar', 'S001');
-end;
+END;
 /
 
 --PRÉSTAMO
@@ -439,3 +543,9 @@ BEGIN
 END;
 /
 
+
+--Procedimientos de actualización
+/*BEGIN 
+	ActualizarPagos();
+END;
+/*/
