@@ -10,9 +10,9 @@ BEGIN
 	values (cont_ahorro.nextval, p_descripcion, p_interes);
 EXCEPTION
 	WHEN dup_val_on_index THEN
-		DBMS_OUTPUT.PUT_LINE(‘Valores duplicados’);
+		DBMS_OUTPUT.PUT_LINE('Valores duplicados');
 	WHEN others THEN
-		DBMS_OUTPUT.PUT_LINE(‘Error desconocido’);
+		DBMS_OUTPUT.PUT_LINE('Error desconocido');
 END;
 /
 
@@ -42,7 +42,7 @@ BEGIN
         p_saldointeres, p_fdeposito, p_fretiro, user, p_fmodificacion);
 EXCEPTION
 	WHEN dup_val_on_index THEN
-		DBMS_OUTPUT.PUT_LINE(‘Valores duplicados’);
+		DBMS_OUTPUT.PUT_LINE('Valores duplicados');
 END; 
 /
 
@@ -72,7 +72,7 @@ BEGIN
 		user);
 EXCEPTION
 	WHEN dup_val_on_index THEN
-		DBMS_OUTPUT.PUT_LINE(‘Valores duplicados’);
+		DBMS_OUTPUT.PUT_LINE('Valores duplicados');
 	END;
 /
 
