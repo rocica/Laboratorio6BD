@@ -62,7 +62,6 @@ CREATE OR REPLACE PROCEDURE Nueva_transaccion(
 	p_monto in Transadeporeti.monto_depret%type,
 	p_status in Transadeporeti.status%type,
 	p_finsercion in Transadeporeti.fecha_insercion%type) is
-
 BEGIN
 	insert into Transadeporeti(cod_sucursal, id_transaccion, id_cliente,
 		tipo_ahorro, fecha_transaccion, tipotransac, monto_depret, status,
@@ -153,11 +152,6 @@ BEGIN
 END;
 /
 
-BEGIN 
-    ActualizarTransacciones();
-END;
-/
-
 
 --PROCEDIMIENTO 5
 CREATE OR REPLACE PROCEDURE ActCuentaCorriente IS
@@ -166,16 +160,15 @@ CREATE OR REPLACE PROCEDURE ActCuentaCorriente IS
 	v_tipo_ahorro ahorros.tipo_ahorro%type;
 	v_salInteres ahorros.saldoahorro%type;
 	v_interes ahorros.saldoahorro%type;
-	v_idcliente ahorros.id_cliente%type;
 
 	CURSOR c_ahorros IS
-		SELECT tasainteres_ahorro, saldoahorro, tipo_ahorro, saldointeres, id_cliente
+		SELECT tasainteres_ahorro, saldoahorro, tipo_ahorro, saldointeres
 		FROM ahorros
-		WHERE (tipo_ahorro = 2);
+		WHERE tipo_ahorro = 2;
 BEGIN
 	OPEN c_ahorros;
 	LOOP
-		FETCH c_ahorros INTO v_tasa, v_salAhorro, v_tipo_ahorro, v_salInteres, v_idcliente;
+		FETCH c_ahorros INTO v_tasa, v_salAhorro, v_tipo_ahorro, v_salInteres;
 		EXIT WHEN c_ahorros%NOTFOUND;
 			v_interes := InteresAhorro(v_salAhorro, v_tasa);
 			v_salAhorro := v_salAhorro + v_interes;
@@ -183,14 +176,8 @@ BEGIN
 			UPDATE ahorros
 			SET saldoahorro = v_salAhorro,
 			saldointeres = v_salInteres
-			WHERE (id_cliente = v_idcliente) AND (tipo_ahorro = v_tipo_ahorro);	
+			WHERE tipo_ahorro = v_tipo_ahorro;	
 	END LOOP;
     CLOSE c_ahorros;
 END;
 /
-
-BEGIN 
-    ActCuentaCorriente();
-END;
-/
-    
