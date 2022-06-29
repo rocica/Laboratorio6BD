@@ -9,7 +9,7 @@ CREATE OR REPLACE PROCEDURE ActualizarTransacciones IS
 	v_salAhorro ahorros.saldoahorro%type;
 	v_salInteres ahorros.saldoahorro%type;
 	v_NewSalAhorro ahorros.saldoahorro%type;
-	v_NewInteres ahorros.saldoahorro%type;
+	v_NewInteres ahorros.saldoahorro%type := 0;
 
 	CURSOR c_Transacciones IS 
 		SELECT id_cliente, tipo_ahorro, tipotransac, monto_depret  
@@ -75,12 +75,15 @@ SELECT * FROM sucursales;
 
 SELECT * FROM suc_tipo_ahorro;
 
+SELECT * FROM auditoria;
+
+
 UPDATE sucursales
 	SET montoahorro = 0
 
-delete ahorros;
+DELETE ahorros;
 
-delete transadeporeti;
+DELETE transadeporeti;
 
 BEGIN
 	nueva_cuenta('S001', 1, 1, '2/01/2022', 6, 200, 5000, 50, '15/6/2022', 

@@ -16,7 +16,6 @@ EXCEPTION
 END;
 /
 
-
 --PROCEDIMIENTO 2
 CREATE SEQUENCE cont_cuenta
 	START with 1
@@ -40,6 +39,7 @@ BEGIN
 	values (p_codsucursal, p_idcliente, p_tipo_ahorro, cont_cuenta.nextval, 
         p_fapertura, p_interes, p_letradep, p_saldoahorro, 
         p_saldointeres, p_fdeposito, p_fretiro, user, p_fmodificacion);
+	
 EXCEPTION
 	WHEN dup_val_on_index THEN
 		DBMS_OUTPUT.PUT_LINE('Valores duplicados');
@@ -97,7 +97,7 @@ CREATE OR REPLACE PROCEDURE ActualizarTransacciones IS
 	v_salAhorro ahorros.saldoahorro%type;
 	v_salInteres ahorros.saldoahorro%type;
 	v_NewSalAhorro ahorros.saldoahorro%type;
-	v_NewInteres ahorros.saldoahorro%type;
+	v_NewInteres ahorros.saldoahorro%type := 0;
 
 	CURSOR c_Transacciones IS 
 		SELECT id_cliente, tipo_ahorro, tipotransac, monto_depret  

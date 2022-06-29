@@ -545,7 +545,8 @@ END;
 
 
 --Procedimientos de actualización
-/*BEGIN 
+/*
+BEGIN 
 	ActualizarPagos();
 END;
 /*/

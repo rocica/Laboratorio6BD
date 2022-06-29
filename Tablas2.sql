@@ -35,16 +35,16 @@ CREATE TABLE ahorros(
 );
 
 CREATE TABLE auditoria(
-	id_transaccion_ahorro number(4) NOT NULL,
-	tabla varchar2(30) NOT NULL,
-	tipo_op char NOT NULL,
-    id_cliente number(4) NOT NULL,
-	tipo_ahorro number(4) NOT NULL,
-	tipo_transac number(1) NOT NULL,
-	saldo_anterior number(9,2) NOT NULL,
-	monto_retdep number(9,2) NOT NULL,
-	saldofinal_desp number(9,2) NOT NULL,
-	usuario varchar2(10) NOT NULL,
+	id_transaccion_ahorro number(4) NULL,
+	tabla varchar2(30) NULL,
+	tipo_op char NULL,
+    id_cliente number(4) NULL,
+	tipo_ahorro number(4) NULL,
+	tipo_transac number(1) NULL,
+	saldo_anterior number(9,2) NULL,
+	monto_retdep number(9,2) NULL,
+	saldofinal_desp number(9,2) NULL,
+	usuario varchar2(10) NULL,
 	fecha date,
 	CONSTRAINT PK_id_transaccion_ahorro PRIMARY KEY (id_transaccion_ahorro),
 	CONSTRAINT FK_id_cliente_auditoria FOREIGN KEY (id_cliente)
@@ -88,6 +88,7 @@ CREATE TABLE suc_tipo_ahorro(
 	cod_sucursal varchar2(4) NOT NULL,
 	tipo_ahorro number(4) NOT NULL, 
 	montoahorrado number(9, 2) DEFAULT 0 NOT NULL,
+	PRIMARY KEY (tipo_ahorro),
 	CONSTRAINT fk_cod_sucursal_ahorros2 
 		FOREIGN KEY (cod_sucursal)
 		REFERENCES sucursales (cod_sucursal),
